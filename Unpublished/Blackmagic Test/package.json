@@ -1,0 +1,21 @@
+{
+  "name": "blackmagic-camera-control",
+  "version": "1.0.0",
+  "description": "Web application for controlling Blackmagic cameras via Bluetooth",
+  "scripts": {
+    "start": "python3 scripts/server.py start",
+    "stop": "python3 scripts/server.py stop",
+    "restart": "python3 scripts/server.py restart",
+    "status": "python3 scripts/server.py status",
+    "open": "open http://localhost:8000"
+  },
+  "keywords": [
+    "blackmagic",
+    "camera",
+    "bluetooth",
+    "control"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+

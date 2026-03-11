@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionList>
+    <Extension Id="com.ppro.timeline.panel">
+        <HostList>
+            <Host Name="PPRO" Port="8093"/>
+        </HostList>
+    </Extension>
+</ExtensionList>
+

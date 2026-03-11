@@ -12,8 +12,8 @@ venv/
 env/
 .env
 
-# IDE
-.idea/
+# Nested git repo (separate project)
+Unpublished/Terminal Video/
 .vscode/
 *.swp
 *.swo

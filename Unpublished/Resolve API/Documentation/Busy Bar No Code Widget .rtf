@@ -1,0 +1,124 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Bold;\f1\froman\fcharset0 Times-Roman;\f2\fmodern\fcharset0 Courier;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\sa321\partightenfactor0
+
+\f0\b\fs48 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Busy Bar No Code Widget\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\fs36 \cf0 Core Learnings and Reusable Patterns\
+1. Core Idea\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 You can create a fully functional Busy Bar widget without writing code by using three elements.\uc0\u8232 A trigger\u8232 An action\u8232 A URL call to the Busy Bar\
+The widget reacts when something happens on your computer and sends a simple HTTP request to the device.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 2. The Trigger\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 A trigger is anything that a no code tool can monitor.\uc0\u8232 Application opens\u8232 Application closes\u8232 A window becomes active\u8232 A timer fires\u8232 A keyboard shortcut is pressed\u8232 A system state changes\
+This starts the chain.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 3. The Action\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 Once the trigger fires you use the tool to make a network request.\uc0\u8232 The action is always an HTTP call\u8232 Method is GET or POST\u8232 Target is the local IP of the Busy Bar\u8232 Path is an input endpoint or an app specific endpoint\
+This lets the Busy Bar change mode, start timers, switch screens or react instantly to the user.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 4. Talking to the Busy Bar\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 All widgets communicate through the HTTP API.\uc0\u8232 Every action becomes a request to these endpoints:\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f0\b\fs28 \cf0 Examples\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 Send a key press\uc0\u8232 
+\f2\fs26 /api/input?key=start
+\f1\fs24 \uc0\u8232 
+\f2\fs26 /api/input?key=busy
+\f1\fs24 \
+Set a countdown\uc0\u8232 
+\f2\fs26 /api/display/draw
+\f1\fs24  with a JSON body defining a CountdownElement\
+Clear the screen\uc0\u8232 
+\f2\fs26 /api/display
+\f1\fs24  with DELETE\
+Play or stop sound\uc0\u8232 
+\f2\fs26 /api/audio/play
+\f1\fs24  or 
+\f2\fs26 /api/audio
+\f1\fs24 \
+Brightness and settings\uc0\u8232 
+\f2\fs26 /api/display/brightness
+\f1\fs24 \uc0\u8232 
+\f2\fs26 /api/name
+\f1\fs24 \uc0\u8232 
+\f2\fs26 /api/access
+\f1\fs24 \
+Widgets can use any of these.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 5. How the No Code Tools Fit\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 The article used tools like Shortcuts or Raycast because they support:\
+Monitoring application changes\uc0\u8232 Binding actions to triggers\u8232 Sending HTTP requests\u8232 Storing small bits of state\u8232 Running simple logic\
+Any no code tool that can perform these steps works.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 6. The Display Model\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 Widgets can draw text, images or countdowns using structured JSON.\
+Elements have\uc0\u8232 id\u8232 type\u8232 x and y position\u8232 alignment\u8232 display (front or back)\u8232 timeout or a display until timestamp\
+Countdowns need\uc0\u8232 timestamp\u8232 direction (time left or time since)\u8232 color\u8232 show hours mode\
+These map cleanly to the API\'92s DisplayElements schema.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 7. Workflow Pattern\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 Every widget followed the same reliable structure.\
+Trigger\uc0\u8232 Pull or compute data\u8232 Construct request\u8232 Send API call\u8232 Optional follow up call to clear or update\
+This pattern is reusable for any workflow someone creates.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 8. Typical Use Cases\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 The article presented common widget styles that another AI should know as templates.\
+Automatic busy mode\uc0\u8232 Turns Busy Bar busy when specific apps open\u8232 Turns Busy Bar free when they close\
+Meeting timer\uc0\u8232 Start a countdown when you join a call\u8232 End the countdown when you leave\
+Focus mode\uc0\u8232 A local shortcut starts a session\u8232 Screen changes to a preset layout\u8232 Sound plays\u8232 Brightness changes\
+Break timer\uc0\u8232 Quick action sets a two minute countdown\u8232 Automatically resets when finished\
+These patterns translate directly into future projects.\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 9. Important Constraints\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 Widgets rely on local network access\uc0\u8232 You need the Busy Bar IP\u8232 APIs require no token when local\u8232 Timing can drift if the no code tool runs slowly\u8232 Animations or rapid updates are better handled by running an app on the device itself\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 10. General Rules for Designing Widgets\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 Keep the payload small\uc0\u8232 Use a single draw call per change\u8232 Avoid redrawing the whole screen every second\u8232 Use the countdown element instead of manual time updates\u8232 Clear elements only when needed\u8232 Test with curl before wiring into a tool\u8232 Name elements consistently so updates can replace instead of overlap\
+\pard\pardeftab720\sa298\partightenfactor0
+
+\f0\b\fs36 \cf0 11. Transferable Concept\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b0\fs24 \cf0 The entire approach shows that you can turn any hardware API into a no code automation system by exposing simple HTTP endpoints.\uc0\u8232 Triggers feed into actions\u8232 Actions proxy into API calls\u8232 The device behaves like an extension of the computer\
+This is the reusable mental model.\
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Timeline Timecode</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+        .status {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .status.connected {
+            background: #2d5a2d;
+        }
+        .status.disconnected {
+            background: #5a2d2d;
+        }
+        .info {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+        button {
+            background: #4a4a4a;
+            color: #e0e0e0;
+            border: 1px solid #666;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        button:hover {
+            background: #5a5a5a;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="status" class="status disconnected">
+        WebSocket Server: Disconnected
+    </div>
+    <div class="info">
+        Open the standalone web client to view timecode.
+    </div>
+    <button id="startBtn">Start Server</button>
+    <button id="stopBtn" disabled>Stop Server</button>
+    
+    <script src="panel.js"></script>
+</body>
+</html>
+

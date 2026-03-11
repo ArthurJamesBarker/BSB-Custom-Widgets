@@ -1,0 +1,23 @@
+{
+  "id": "com.ppro.timeline.uxp",
+  "name": "Premiere Timeline Timecode",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "host": {
+    "app": "PPRO",
+    "minVersion": "25.0.0"
+  },
+  "uiAccess": {
+    "type": "panel",
+    "geometry": {
+      "size": {
+        "width": 300,
+        "height": 200
+      }
+    }
+  },
+  "requiredPermissions": [
+    "network"
+  ]
+}
+
