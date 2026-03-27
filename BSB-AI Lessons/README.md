@@ -11,9 +11,9 @@ Teaching materials for AI-assisted development on the **BUSY Bar**. Content is s
 
 - **Widgets (host PC → device):** [Official/README.md](Official/README.md) — lessons `01`–`11`, `openapi.yaml`, `CLI/`.
 - **JerryScript apps (code on device):** [Unofficial/12-JerryScript-on-device-apps.md](Unofficial/12-JerryScript-on-device-apps.md).
-- **Lua on device (historical):** [Unofficial/Custom-APPS-Lua/README-Custom-APPS.md](Unofficial/Custom-APPS-Lua/README-Custom-APPS.md).
+-- **Lua on device (historical):** [Unofficial/Custom-APPS-Lua/README-Custom-APPS.md](Unofficial/Custom-APPS-Lua/README-Custom-APPS.md).
 
-Repo: [github.com/ArthurJamesBarker/BSB-AI-Lessons](https://github.com/ArthurJamesBarker/BSB-AI-Lessons) — raw paths use `main/Official/…` or `main/Unofficial/…`.
+This folder is tracked inside the main `BSB-Custom-Widgets` repo (no separate AI-lessons repo).
 
 ## Single full document
 
