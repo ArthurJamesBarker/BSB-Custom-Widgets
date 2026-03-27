@@ -9,7 +9,7 @@ This repo contains:
 ## Start here (pick one)
 
 - **I want to build a widget fast (recommended)**: start with **AI Lessons** → `BSB-AI Lessons/README.md` (then `BSB-AI Lessons/Official/README.md`)
-- **I want ready-to-use widgets**: `Published/Widgets/`
+- **I want ready-to-use widgets**: `APPS & Widgets/Published/Widgets/`
 - **I’m browsing experiments / WIP apps & widgets**: `APPS & Widgets/Unpublished/`
 
 ## Key docs
@@ -29,13 +29,13 @@ This repo contains:
 
 ## Repo structure (high level)
 
-- `Published/Widgets/`: things intended to be shareable/ready
+- `APPS & Widgets/Published/`: things intended to be shareable/ready
 - `APPS & Widgets/Unpublished/`: experiments and in-progress apps/widgets
 - `BSB-AI Lessons/`: AI prompt + reference materials (now tracked in this repo)
 
 ## Where is…?
 
-- **A “widget.py” you run on your computer**: usually under `Published/Widgets/` (ready) or `APPS & Widgets/Unpublished/Widgets/` (WIP)
+- **A “widget.py” you run on your computer**: usually under `APPS & Widgets/Published/Widgets/` (ready) or `APPS & Widgets/Unpublished/Widgets/` (WIP)
 - **An app that runs on the device**: usually under `APPS & Widgets/Unpublished/APPS/`
 - **API reference / how to draw to the screen**: `BSB-AI Lessons/Official/openapi.yaml` + `BSB-AI Lessons/Official/03-Device-and-API.md`
 

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Repo cleanup:** Removed duplicate top-level `Published/` and `Unpublished/` trees to keep `APPS & Widgets/Published/` and `APPS & Widgets/Unpublished/` as the canonical structure.
 - **Docs:** Expanded root `README.md` into a clearer docs hub with recommended “start here” paths and an index of the most important sub-project READMEs.
 - **Docs:** Added a single root `README.md` as the canonical docs hub (links out to all sub-project READMEs and the AI lessons).
 - **Docs:** Merged `BSB-AI Lessons/` into this repo (removed its nested git repo) so Custom Widgets + AI lessons live together.
