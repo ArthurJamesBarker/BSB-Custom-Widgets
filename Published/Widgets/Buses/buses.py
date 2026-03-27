@@ -2,18 +2,37 @@ import requests
 import math
 import time
 
-STOP_ID = "490000254EB"  # Waterloo Station, Mepham Street
+STOP_ID = "490007515D"  # Greenwich Town Centre / Cutty Sark (stand D)
 PRIMARY_KEY = "5efbd8786ce54a4eb5ec98a98d2dbc49"  # TfL Primary Key
 
 DISPLAY_HOST = "http://10.0.4.20"
 DISPLAY_DRAW_ENDPOINT = "/api/display/draw"
 
-# How often to refresh the display (seconds)
-UPDATE_INTERVAL = 5
+# How often to poll TfL (seconds). Kept moderate so marquee scroll is not reset every few seconds.
+POLL_INTERVAL = 30
 REQUEST_TIMEOUT = 15
 
 # Correction so device matches TfL site (seconds). Set to -60 if device runs 1 min high, 0 for no offset.
 TIME_OFFSET_SECONDS = 0
+
+def _top_arrivals(arrivals):
+    return sorted(arrivals, key=lambda x: x.get("timeToStation", 0))[:2]
+
+
+def row_display_fields(a):
+    route = a.get("lineName") or "??"
+    dest = (a.get("destinationName") or "??")
+    seconds = max(0, a.get("timeToStation", 0) + TIME_OFFSET_SECONDS)
+    mins = "due" if seconds < 30 else f"{math.ceil(seconds/60)}m"
+    return route, dest, mins
+
+
+def display_signature(arrivals):
+    """What the user sees per row — only redraw when this changes (stops scroll reset)."""
+    if not arrivals:
+        return ()
+    return tuple(row_display_fields(a) for a in _top_arrivals(arrivals))
+
 
 def fetch_bus_arrivals(stop_id):
     url = f"https://api.tfl.gov.uk/StopPoint/{stop_id}/Arrivals"
@@ -25,18 +44,12 @@ def fetch_bus_arrivals(stop_id):
     return r.json()
 
 def format_arrival_elements(arrivals):
-    arrivals_sorted = sorted(arrivals, key=lambda x: x.get("timeToStation", 0))
     elements = []
     base_y = 2
     line_height = 7
-    for idx, a in enumerate(arrivals_sorted[:2]):
+    for idx, a in enumerate(_top_arrivals(arrivals)):
         y = base_y + idx * line_height
-        route = "47" if idx == 1 else (a.get("lineName") or "??")
-        dest_full = a.get("destinationName") or "??"
-        dest = "London Bridge" if idx == 1 else (dest_full.split()[0] if dest_full.split() else dest_full)
-        seconds = max(0, a.get("timeToStation", 0) + TIME_OFFSET_SECONDS)
-        # Match TfL site: "due" only when < 30s, else show minutes (30–59s = "1 min")
-        mins = "due" if seconds < 30 else f"{math.ceil(seconds/60)}min"
+        route, dest, mins = row_display_fields(a)
 
         elements.append({
             "id": f"route_{idx}",
@@ -93,22 +106,27 @@ def send_to_display(elements):
         print("Display send error:", r.status_code, r.text)
 
 def main():
+    last_sig = None
     while True:
         try:
             arrivals = fetch_bus_arrivals(STOP_ID)
             if not arrivals:
                 print("No bus arrival data.")
+                last_sig = None
             else:
-                elements = format_arrival_elements(arrivals)
-                for e in elements:
-                    print(f"{e['text']:>20}")
-                send_to_display(elements)
+                sig = display_signature(arrivals)
+                if sig != last_sig:
+                    last_sig = sig
+                    elements = format_arrival_elements(arrivals)
+                    for e in elements:
+                        print(f"{e['text']:>20}")
+                    send_to_display(elements)
         except requests.RequestException as e:
             print("Network error:", e)
         except KeyboardInterrupt:
             print("\nStopped.")
             break
-        time.sleep(UPDATE_INTERVAL)
+        time.sleep(POLL_INTERVAL)
 
 if __name__ == "__main__":
     main()

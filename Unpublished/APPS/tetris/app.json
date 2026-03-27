@@ -1,0 +1,7 @@
+{
+  "name": "Tetris",
+  "runtime": "js",
+  "entry": "main.js",
+  "front_icon": "icon_front.bin",
+  "back_icon": "/ext/apps/_shared_icons/green_circle_back_11x11.bin"
+}

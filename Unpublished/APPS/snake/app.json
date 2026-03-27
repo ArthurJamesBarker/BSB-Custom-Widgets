@@ -1,0 +1,7 @@
+{
+  "name": "Snake",
+  "runtime": "js",
+  "entry": "main.js",
+  "front_icon": "icon_front.bin",
+  "back_icon": "icon_back.bin"
+}
