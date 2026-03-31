@@ -1,0 +1,6 @@
+requests>=2.28.0
+SpeechRecognition>=3.10.0
+numpy>=1.26.0
+sounddevice>=0.4.6
+# Default STT (Whisper). For Google-only: pip install without this line and set SUBTITLE_STT_BACKEND=google
+faster-whisper>=1.0.0

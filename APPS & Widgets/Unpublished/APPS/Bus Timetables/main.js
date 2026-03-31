@@ -10,10 +10,18 @@
 
 let display = require("display");
 let input = require("input");
+let timer = require("timer");
 
 let screen = "menu";
 let menuIndex = 0;
 let menuScroll = 0;
+let londonSelectedRow = 0; // 0 = first row, 1 = second row, -1 = off
+
+// Destination marquee scrolling (front strip).
+let scrollTick = 0;
+let scrollTimer = null;
+let SCROLL_INTERVAL_SECONDS = 0.25;
+let SCROLL_GAP = "   ";
 
 let CITIES = [
   {
@@ -21,8 +29,8 @@ let CITIES = [
     menuLabel: "London",
     theme: "london",
     arrivals: [
-      { lineName: "8", destinationName: "Oxford St", platformName: "", timeToStation: 180, lineColor: "#e8ba11" },
-      { lineName: "25", destinationName: "Ilford", platformName: "", timeToStation: 480, lineColor: "#e8ba10" },
+      { lineName: "286", destinationName: "Sidcup, Queen Mary's Hospital", platformName: "", timeToStation: 180, lineColor: "#e8ba10" },
+      { lineName: "286", destinationName: "Sidcup, Queen Mary's Hospital", platformName: "", timeToStation: 720, lineColor: "#e8ba10" },
     ],
   },
   {
@@ -51,6 +59,39 @@ let MENU_LINE_Y = [1, 9];
 function toStr(x) {
   if (x == null) return "";
   return str(x);
+}
+
+function stopScrollTimer() {
+  if (scrollTimer !== null && scrollTimer !== undefined) {
+    timer.cancel(scrollTimer);
+  }
+  scrollTimer = null;
+}
+
+function startScrollTimer() {
+  stopScrollTimer();
+  scrollTick = 0;
+  scrollTimer = timer.every(SCROLL_INTERVAL_SECONDS, function () {
+    if (screen !== "city") return;
+    scrollTick = scrollTick + 1;
+    drawCity();
+  });
+}
+
+function marqueeText(fullText, maxChars) {
+  let s = toStr(fullText);
+  if (maxChars <= 0) return "";
+  if (s.length <= maxChars) return s;
+
+  // Simple wrap-around marquee by character count (no text-width API in on-device JS).
+  let loop = s + SCROLL_GAP;
+  let i = scrollTick % loop.length;
+  let out = "";
+  let k;
+  for (k = 0; k < maxChars; k++) {
+    out = out + loop[(i + k) % loop.length];
+  }
+  return out;
 }
 
 function sortArrivals(list) {
@@ -130,17 +171,19 @@ function drawLondon(arrivals) {
     let r = rows[0];
     let y = 2;
     let c = r.lineColor || whiteGold;
+    let minsColor = londonSelectedRow === 0 ? "#ffffff" : "#e8ba10";
     display.text(r.route, { x: 2, y: y, font: "small", color: c, align: "left" });
-    display.text(r.dest, { x: 13, y: y, font: "small", color: "#e8ba10", align: "left" });
-    display.text(r.mins, { x: 62, y: y, font: "small", color: "#e8ba10", align: "left" });
+    display.text(marqueeText(r.dest, 10), { x: 17, y: y, font: "small", color: "#e8ba10", align: "left" });
+    display.text(r.mins, { x: 59, y: y, font: "small", color: minsColor, align: "left" });
   }
   if (rows.length >= 2) {
     let r = rows[1];
     let y = 9;
     let c = r.lineColor || whiteGold;
+    let minsColor = londonSelectedRow === 1 ? "#ffffff" : "#e8ba10";
     display.text(r.route, { x: 2, y: y, font: "small", color: c, align: "left" });
-    display.text(r.dest, { x: 13, y: y, font: "small", color: "#e8ba10", align: "left" });
-    display.text(r.mins, { x: 62, y: y, font: "small", color: "#e8ba10", align: "left" });
+    display.text(marqueeText(r.dest, 10), { x: 17, y: y, font: "small", color: "#e8ba10", align: "left" });
+    display.text(r.mins, { x: 59, y: y, font: "small", color: minsColor, align: "left" });
   }
   display.show();
 }
@@ -159,15 +202,15 @@ function drawNY(arrivals) {
     let r = rows[0];
     let y1 = 0;
     display.text(r.route, { x: 3, y: y1, font: "small", color: white, align: "left" });
-    display.text(r.dest, { x: 17, y: y1, font: "small", color: white, align: "left" });
-    display.text(r.mins, { x: 63, y: y1, font: "small", color: white, align: "left" });
+    display.text(marqueeText(r.dest, 11), { x: 21, y: y1, font: "small", color: white, align: "left" });
+    display.text(r.mins, { x: 60, y: y1, font: "small", color: white, align: "left" });
   }
   if (rows.length >= 2) {
     let r = rows[1];
     let y2 = 9;
     display.text(r.route, { x: 3, y: y2, font: "small", color: white, align: "left" });
-    display.text(r.dest, { x: 17, y: y2, font: "small", color: white, align: "left" });
-    display.text(r.mins, { x: 62, y: y2, font: "small", color: white, align: "left" });
+    display.text(marqueeText(r.dest, 11), { x: 21, y: y2, font: "small", color: white, align: "left" });
+    display.text(r.mins, { x: 59, y: y2, font: "small", color: white, align: "left" });
   }
   display.show();
 }
@@ -186,15 +229,15 @@ function drawToronto(arrivals) {
     let r = rows[0];
     let y1 = 0;
     display.text(r.route, { x: 2, y: y1, font: "small", color: white, align: "left" });
-    display.text(r.dest, { x: 17, y: y1, font: "small", color: white, align: "left" });
-    display.text(r.mins, { x: 62, y: y1, font: "small", color: white, align: "left" });
+    display.text(marqueeText(r.dest, 11), { x: 21, y: y1, font: "small", color: white, align: "left" });
+    display.text(r.mins, { x: 59, y: y1, font: "small", color: white, align: "left" });
   }
   if (rows.length >= 2) {
     let r = rows[1];
     let y2 = 9;
     display.text(r.route, { x: 1, y: y2, font: "small", color: white, align: "left" });
-    display.text(r.dest, { x: 17, y: y2, font: "small", color: white, align: "left" });
-    display.text(r.mins, { x: 62, y: y2, font: "small", color: white, align: "left" });
+    display.text(marqueeText(r.dest, 11), { x: 21, y: y2, font: "small", color: white, align: "left" });
+    display.text(r.mins, { x: 59, y: y2, font: "small", color: white, align: "left" });
   }
   display.show();
 }
@@ -211,35 +254,73 @@ function drawCity() {
   }
 }
 
+function currentCity() {
+  return CITIES[menuIndex];
+}
+
+function isLondonCitySelected() {
+  let city = currentCity();
+  return !!city && city.theme === "london";
+}
+
+function adjustSelectedLondonMinutes(deltaMinutes) {
+  if (screen !== "city") return;
+  if (!isLondonCitySelected()) return;
+  if (londonSelectedRow < 0) return;
+
+  let city = currentCity();
+  if (!city || !city.arrivals || city.arrivals.length <= londonSelectedRow) return;
+
+  let row = city.arrivals[londonSelectedRow];
+  let nowSeconds = row.timeToStation !== undefined ? row.timeToStation : 0;
+  let nextSeconds = nowSeconds + deltaMinutes * 60;
+  if (nextSeconds < 0) nextSeconds = 0;
+  if (nextSeconds > 99 * 60) nextSeconds = 99 * 60;
+  row.timeToStation = nextSeconds;
+  drawCity();
+}
+
 input.on("up", "short", function () {
-  if (screen !== "menu") return;
-  if (menuIndex <= 0) return;
-  menuIndex = menuIndex - 1;
-  if (menuIndex === 0) {
-    menuScroll = 0;
+  if (screen === "menu") {
+    if (menuIndex <= 0) return;
+    menuIndex = menuIndex - 1;
+    if (menuIndex === 0) {
+      menuScroll = 0;
+    }
+    drawMenu();
+    return;
   }
-  drawMenu();
+  if (screen === "city" && isLondonCitySelected()) {
+    adjustSelectedLondonMinutes(1);
+  }
 });
 
 input.on("down", "short", function () {
-  if (screen !== "menu") return;
-  if (menuIndex >= CITIES.length - 1) return;
-  menuIndex = menuIndex + 1;
-  if (menuIndex === 2) {
-    menuScroll = 1;
+  if (screen === "menu") {
+    if (menuIndex >= CITIES.length - 1) return;
+    menuIndex = menuIndex + 1;
+    if (menuIndex === 2) {
+      menuScroll = 1;
+    }
+    drawMenu();
+    return;
   }
-  drawMenu();
+  if (screen === "city" && isLondonCitySelected()) {
+    adjustSelectedLondonMinutes(-1);
+  }
 });
 
 function enterSelectedCity() {
   if (screen !== "menu") return;
   screen = "city";
   drawCity();
+  startScrollTimer();
 }
 
 function goToSelectionFromCity() {
   if (screen !== "city") return;
   screen = "menu";
+  stopScrollTimer();
   drawMenu();
 }
 
@@ -247,14 +328,41 @@ input.on("ok", "short", function () {
   if (screen === "menu") {
     enterSelectedCity();
   } else if (screen === "city") {
-    goToSelectionFromCity();
+    if (isLondonCitySelected()) {
+      if (londonSelectedRow === 0) {
+        londonSelectedRow = 1;
+      } else if (londonSelectedRow === 1) {
+        londonSelectedRow = -1;
+      } else {
+        londonSelectedRow = 0;
+      }
+      drawCity();
+    } else {
+      goToSelectionFromCity();
+    }
   }
 });
 
 input.on("start", "short", function () {
   if (screen === "menu") {
     enterSelectedCity();
+  } else if (screen === "city") {
+    goToSelectionFromCity();
   }
+});
+
+// Some firmware/builds map the wheel to left/right events.
+input.on("right", "short", function () {
+  adjustSelectedLondonMinutes(1);
+});
+input.on("left", "short", function () {
+  adjustSelectedLondonMinutes(-1);
+});
+input.on("right", "repeat", function () {
+  adjustSelectedLondonMinutes(1);
+});
+input.on("left", "repeat", function () {
+  adjustSelectedLondonMinutes(-1);
 });
 
 drawMenu();
